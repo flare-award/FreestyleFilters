@@ -19,21 +19,39 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore
+        shell: bash
         run: |
+          set -o pipefail
           dotnet --info
           dotnet nuget list source
-          dotnet restore --verbosity normal 2>&1 | tee restore.log || (cat restore.log; exit 1)
+          dotnet restore --verbosity normal 2>&1 | tee restore.log
+          echo "=== RESTORE EXIT CODE ${PIPESTATUS[0]} ==="
+          cat restore.log
 
-      - name: Upload restore log on failure
-        if: failure()
+      - name: Upload restore log
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: restore-log
           path: restore.log
           retention-days: 7
+          if-no-files-found: warn
 
       - name: Build
-        run: dotnet build --configuration Release --verbosity minimal
+        shell: bash
+        run: |
+          set -o pipefail
+          dotnet build --configuration Release --verbosity minimal 2>&1 | tee build.log
+          cat build.log
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 7
+          if-no-files-found: warn
 
       - name: Test
         run: dotnet test --configuration Release --verbosity minimal
