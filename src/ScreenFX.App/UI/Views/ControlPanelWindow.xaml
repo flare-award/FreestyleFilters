@@ -149,11 +149,16 @@
                                     <CheckBox Grid.Column="2" x:Name="ToggleSaturation" Content="Вкл" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
                                 </Grid>
                                 <Slider x:Name="SliderSaturation" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="2.5" Value="1" TickFrequency="0.1" Margin="0,4,0,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="SpaceBetween">
-                                    <TextBlock Text="Ч/Б" FontSize="10" Foreground="{StaticResource SecondaryBrush}"/>
-                                    <TextBlock Text="Натурально" FontSize="10" Foreground="{StaticResource SecondaryBrush}"/>
-                                    <TextBlock Text="Ярко" FontSize="10" Foreground="{StaticResource SecondaryBrush}"/>
-                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Ч/Б" FontSize="10" Foreground="{StaticResource SecondaryBrush}"/>
+                                    <TextBlock Grid.Column="1" Text="Натурально" FontSize="10" Foreground="{StaticResource SecondaryBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="Ярко" FontSize="10" Foreground="{StaticResource SecondaryBrush}" HorizontalAlignment="Right"/>
+                                </Grid>
                                 <Button x:Name="ResetSaturation" Content="Сброс" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right" Padding="8,2"/>
                             </StackPanel>
                         </Border>
@@ -273,11 +278,16 @@
                                     <CheckBox Grid.Column="2" x:Name="ToggleTemp" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
                                 </Grid>
                                 <Slider x:Name="SliderTemp" Style="{StaticResource ExpressiveSlider}" Minimum="-1" Maximum="1" Value="0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="SpaceBetween">
-                                    <TextBlock Text="❄ Холодно" FontSize="11" Foreground="#FF3B82F6"/>
-                                    <TextBlock Text="Нейтрально" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
-                                    <TextBlock Text="Тепло ☀" FontSize="11" Foreground="#FFF59E0B"/>
-                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="❄ Холодно" FontSize="11" Foreground="#FF3B82F6"/>
+                                    <TextBlock Grid.Column="1" Text="Нейтрально" FontSize="11" Foreground="{StaticResource SecondaryBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="Тепло ☀" FontSize="11" Foreground="#FFF59E0B" HorizontalAlignment="Right"/>
+                                </Grid>
                                 <Button x:Name="ResetTemp" Content="Сброс" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right" Padding="8,2"/>
                             </StackPanel>
                         </Border>
