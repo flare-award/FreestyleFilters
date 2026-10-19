@@ -21,7 +21,7 @@ namespace ScreenFX.UI.Views
             Loaded += (s,e)=> Keyboard.Focus(this);
         }
 
-        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        private void OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = true;
             var key = e.Key == Key.System ? e.SystemKey : e.Key;
@@ -77,6 +77,6 @@ namespace ScreenFX.UI.Views
             }
         }
 
-        private void OnPreviewKeyUp(object sender, KeyEventArgs e) { }
+        private void OnPreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e) { }
     }
 }

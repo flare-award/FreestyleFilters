@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
 using Vortice.D3DCompiler;
+using Vortice.Mathematics;
 using ScreenFX.Engine.Filters;
 
 namespace ScreenFX.Engine.Rendering
