@@ -15,7 +15,7 @@ namespace ScreenFX
             DispatcherUnhandledException += (s, args) =>
             {
                 System.Diagnostics.Debug.WriteLine($"Unhandled: {args.Exception}");
-                MessageBox.Show($"Произошла ошибка: {args.Exception.Message}\n\nФильтры будут временно отключены.", "ScreenFX", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show($"Произошла ошибка: {args.Exception.Message}\n\nФильтры будут временно отключены.", "ScreenFX", MessageBoxButton.OK, MessageBoxImage.Warning);
                 args.Handled = true;
             };
             AppDomain.CurrentDomain.UnhandledException += (s, args) =>

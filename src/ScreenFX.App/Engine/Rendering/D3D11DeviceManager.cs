@@ -21,7 +21,7 @@ namespace ScreenFX.Engine.Rendering
 #if DEBUG
                 // flags |= DeviceCreationFlags.Debug;
 #endif
-                ResultCode hr = Vortice.Direct3D11.D3D11.D3D11CreateDevice(
+                var hr = Vortice.Direct3D11.D3D11.D3D11CreateDevice(
                     null, DriverType.Hardware, flags,
                     new[] { FeatureLevel.Level_11_1, FeatureLevel.Level_11_0, FeatureLevel.Level_10_1 },
                     out ID3D11Device? dev, out FeatureLevel level, out ID3D11DeviceContext? ctx);

@@ -41,7 +41,7 @@ namespace ScreenFX.Engine.Capture
 
                 for (int i = 0; ; i++)
                 {
-                    var hrEnum = adapter.EnumOutputs(i, out IDXGIOutput? output);
+                    var hrEnum = adapter.EnumOutputs((uint)i, out IDXGIOutput? output);
                     if (hrEnum.Failure || output == null) break;
                     try
                     {
@@ -68,7 +68,7 @@ namespace ScreenFX.Engine.Capture
                 if (_output1 == null)
                 {
                     using var adapter2 = dxgiDevice.GetAdapter();
-                    var hr0 = adapter2.EnumOutputs(0, out IDXGIOutput? out0);
+                    var hr0 = adapter2.EnumOutputs((uint)0, out IDXGIOutput? out0);
                     if (hr0.Success && out0 != null)
                     {
                         _output1 = out0.QueryInterface<IDXGIOutput1>();

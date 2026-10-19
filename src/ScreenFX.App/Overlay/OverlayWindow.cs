@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
+using Vortice.Mathematics;
 using ScreenFX.Monitors;
 using ScreenFX.Engine.Filters;
 using ScreenFX.Engine.Rendering;
@@ -62,7 +64,7 @@ namespace ScreenFX.Overlay
             public string lpszClassName;
         }
 
-        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        private static readonly IntPtr HWND_TOPMOST = (IntPtr)(-1);
         private static WndProcDelegate? _wndProcDelegate;
 
         private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
@@ -165,19 +167,16 @@ namespace ScreenFX.Overlay
             // Prevent alt+enter fullscreen
             factory.MakeWindowAssociation(_hwnd, WindowAssociationFlags.IgnoreAltEnter);
 
-            using var bb = _swapChain.GetBuffer<ID3D11Texture2D>(0);
-            _backBuffer = bb; // keep? Actually GetBuffer returns new ref, we hold
-            // But we disposed? Need to clone: Vortice GetBuffer creates new COM object; we keep it
+            _backBuffer = _swapChain.GetBuffer<ID3D11Texture2D>(0);
             _rtv = device.CreateRenderTargetView(_backBuffer);
         }
 
         private IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
             const uint WM_NCHITTEST = 0x84;
-            const uint HTNOWHERE = 0;
-            const uint HTTRANSPARENT = -1;
+            const int HTTRANSPARENT = -1;
             if (msg == WM_NCHITTEST && _isClickThrough)
-                return new IntPtr(HTTRANSPARENT);
+                return (IntPtr)HTTRANSPARENT;
             return DefWindowProc(hWnd, msg, wParam, lParam);
         }
 
@@ -227,14 +226,7 @@ namespace ScreenFX.Overlay
 
                 using (tex)
                 {
-                    // Создаём SRV для захваченной текстуры (каждый кадр новый texture, поэтому создаём временный SRV)
-                    var srvDesc = new ShaderResourceViewDescription
-                    {
-                        Format = Format.B8G8R8A8_UNorm,
-                        ViewDimension = ShaderResourceViewDimension.Texture2D,
-                        Texture2D = new Texture2DShaderResourceView { MipLevels = 1, MostDetailedMip = 0 }
-                    };
-                    using var srv = _deviceManager.Device!.CreateShaderResourceView(tex, srvDesc);
+                    using var srv = _deviceManager.Device!.CreateShaderResourceView(tex);
 
                     var gpuParams = _currentParams.ToGpu(_monitor.Width, _monitor.Height);
                     _filterRenderer.UpdateConstants(gpuParams);

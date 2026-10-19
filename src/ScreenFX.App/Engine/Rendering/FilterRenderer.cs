@@ -14,10 +14,8 @@ namespace ScreenFX.Engine.Rendering
         private readonly D3D11DeviceManager _deviceManager;
         private ID3D11VertexShader? _vs;
         private ID3D11PixelShader? _ps;
-        private ID3D11InputLayout? _layout; // not needed for fullscreen triangle but keep
         private ID3D11Buffer? _constantBuffer;
         private ID3D11SamplerState? _sampler;
-        private ID3D11Texture2D? _intermediateTexture; // for multi-pass if needed
         private bool _initialized;
 
         public FilterRenderer(D3D11DeviceManager deviceManager)
@@ -30,16 +28,11 @@ namespace ScreenFX.Engine.Rendering
             try
             {
                 var device = _deviceManager.Device!;
-                // Load shaders from embedded resources or files
                 string shaderDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Engine", "Rendering", "Shaders");
-                // Fallback to executable dir
                 if (!Directory.Exists(shaderDir))
                     shaderDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Shaders");
-                // If still not found, use embedded HLSL strings
                 string vsHlsl = GetEmbeddedVS();
                 string psHlsl = GetEmbeddedPS();
-
-                // Try file first
                 string vsPath = Path.Combine(shaderDir, "FilterVS.hlsl");
                 string psPath = Path.Combine(shaderDir, "FilterPS.hlsl");
                 if (File.Exists(vsPath)) vsHlsl = File.ReadAllText(vsPath);
@@ -51,22 +44,20 @@ namespace ScreenFX.Engine.Rendering
                 var psBytecode = Compiler.Compile(psHlsl, "main", "FilterPS", "ps_5_0");
                 _ps = device.CreatePixelShader(psBytecode.Span);
 
-                // Constant buffer: size must be multiple of 16
                 int cbSize = Marshal.SizeOf<FilterParamsGpu>();
                 cbSize = (cbSize + 15) & ~15;
-                var cbDesc = new BufferDescription(cbSize, BindFlags.ConstantBuffer, ResourceOptionFlags.None, ResourceUsage.Dynamic, CpuAccessFlags.Write, 0);
+                var cbDesc = new BufferDescription((uint)cbSize, BindFlags.ConstantBuffer, ResourceUsage.Dynamic, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
                 _constantBuffer = device.CreateBuffer(cbDesc);
 
-                var sampDesc = new SamplerDescription
-                {
-                    Filter = Filter.MinMagMipLinear,
-                    AddressU = TextureAddressMode.Clamp,
-                    AddressV = TextureAddressMode.Clamp,
-                    AddressW = TextureAddressMode.Clamp,
-                    ComparisonFunction = ComparisonFunction.Never,
-                    MinLOD = 0,
-                    MaxLOD = float.MaxValue
-                };
+                var sampDesc = new SamplerDescription(Filter.MinMagMipLinear, TextureAddressMode.Clamp);
+                sampDesc.AddressU = TextureAddressMode.Clamp;
+                sampDesc.AddressV = TextureAddressMode.Clamp;
+                sampDesc.AddressW = TextureAddressMode.Clamp;
+                sampDesc.ComparisonFunc = ComparisonFunction.Never;
+                sampDesc.MinLOD = 0;
+                sampDesc.MaxLOD = float.MaxValue;
+                sampDesc.MipLODBias = 0;
+                sampDesc.MaxAnisotropy = 1;
                 _sampler = device.CreateSamplerState(sampDesc);
 
                 _initialized = true;
@@ -83,7 +74,7 @@ namespace ScreenFX.Engine.Rendering
         {
             if (!_initialized || _constantBuffer == null) return;
             var ctx = _deviceManager.Context!;
-            var mapped = ctx.Map(_constantBuffer, 0, MapMode.WriteDiscard, MapFlags.None);
+            var mapped = ctx.Map(_constantBuffer, 0, MapMode.WriteDiscard, Vortice.Direct3D11.MapFlags.None);
             Marshal.StructureToPtr(gpuParams, mapped.DataPointer, false);
             ctx.Unmap(_constantBuffer, 0);
         }
@@ -92,18 +83,18 @@ namespace ScreenFX.Engine.Rendering
         {
             if (!_initialized) return;
             var ctx = _deviceManager.Context!;
-            ctx.RasterizerStage.SetViewport(viewport);
-            ctx.OutputMerger.SetRenderTargets(rtv);
-            ctx.VertexShader.Set(_vs);
-            ctx.PixelShader.Set(_ps);
-            ctx.PixelShader.SetConstantBuffer(0, _constantBuffer);
-            ctx.PixelShader.SetShaderResource(0, srcSrv);
-            ctx.PixelShader.SetSampler(0, _sampler);
-            // No vertex buffer, draw fullscreen triangle
-            ctx.InputAssembler.PrimitiveTopology = Vortice.Direct3D.PrimitiveTopology.TriangleList;
+            ctx.RSSetViewport(viewport);
+            ctx.OMSetRenderTargets(rtv);
+            ctx.VSSetShader(_vs);
+            ctx.PSSetShader(_ps);
+            if (_constantBuffer != null)
+                ctx.PSSetConstantBuffer(0, _constantBuffer);
+            ctx.PSSetShaderResource(0, srcSrv);
+            if (_sampler != null)
+                ctx.PSSetSampler(0, _sampler);
+            ctx.IASetPrimitiveTopology(Vortice.Direct3D.PrimitiveTopology.TriangleList);
             ctx.Draw(3, 0);
-            // Unbind
-            ctx.PixelShader.SetShaderResource(0, null);
+            ctx.PSSetShaderResource(0, null);
         }
 
         private string GetEmbeddedVS() => @"
@@ -114,14 +105,12 @@ VSOutput main(uint vertexID : SV_VertexID) {
 
         private string GetEmbeddedPS()
         {
-            // For fallback, try to load from resource file embedded at build
             try
             {
                 var asm = typeof(FilterRenderer).Assembly;
                 using var s = asm.GetManifestResourceStream("ScreenFX.Engine.Rendering.Shaders.FilterPS.hlsl");
                 if (s != null) using (var r = new StreamReader(s)) return r.ReadToEnd();
             } catch {}
-            // Minimal passthrough if full shader missing
             return @"
 Texture2D screenTexture : register(t0); SamplerState screenSampler : register(s0);
 cbuffer FilterParams : register(b0) { float saturation; float exposure; float hueShift; float temperature; float nightModeStrength; int enableNegative; int enableHalftone; float halftoneStrength; float halftoneDotSize; float halftoneContrast; float halftoneAngle; float sharpenStrength; float blurStrength; float circularBlurRadius; float circularBlurStrength; float circularBlurSmoothness; float2 circularBlurCenter; float2 resolution; float hsvHue; float hsvSaturation; float hsvValue; int letterboxEnabled; float letterboxHeight; float letterboxAspect; float3 letterboxColor; float _pad0; float2 _pad1; };
@@ -150,10 +139,8 @@ float4 main(float4 pos:SV_Position,float2 uv:TEXCOORD0):SV_Target{
         {
             _vs?.Dispose();
             _ps?.Dispose();
-            _layout?.Dispose();
             _constantBuffer?.Dispose();
             _sampler?.Dispose();
-            _intermediateTexture?.Dispose();
         }
     }
 }

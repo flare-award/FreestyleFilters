@@ -121,14 +121,14 @@ namespace ScreenFX.UI.Views
             // Init D3D + overlays
             if (!_deviceManager.Initialize())
             {
-                MessageBox.Show("Не удалось инициализировать Direct3D 11. Фильтры будут недоступны.\nПроверьте драйвер видеокарты.", "ScreenFX", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show("Не удалось инициализировать Direct3D 11. Фильтры будут недоступны.\nПроверьте драйвер видеокарты.", "ScreenFX", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
             }
             else
             {
                 _filterRenderer = new FilterRenderer(_deviceManager);
                 if (!_filterRenderer.Initialize())
                 {
-                    MessageBox.Show("Не удалось скомпилировать шейдеры фильтров.", "ScreenFX", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show("Не удалось скомпилировать шейдеры фильтров.", "ScreenFX", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                 }
                 _captureManager.InitializeDevice();
                 _overlayManager = new OverlayManager(_deviceManager, _filterRenderer!, _captureManager);
@@ -837,8 +837,8 @@ namespace ScreenFX.UI.Views
                 var profile = _profileManager.Get(id);
                 if (profile!=null)
                 {
-                    var res = MessageBox.Show($"Удалить профиль «{profile.Name}»?", "ScreenFX", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (res==MessageBoxResult.Yes)
+                    var res = System.Windows.MessageBox.Show($"Удалить профиль «{profile.Name}»?", "ScreenFX", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question);
+                    if (res==System.Windows.MessageBoxResult.Yes)
                     {
                         _profileManager.Delete(id);
                         RefreshProfiles();
@@ -916,16 +916,16 @@ namespace ScreenFX.UI.Views
             Width = 380; Height = 180;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             ResizeMode = ResizeMode.NoResize;
-            Background = (System.Windows.Media.Brush)Application.Current.FindResource("SurfaceBrush");
+            Background = (System.Windows.Media.Brush)System.Windows.Application.Current.FindResource("SurfaceBrush");
             var root = new StackPanel { Margin = new Thickness(20) };
             root.Children.Add(new TextBlock { Text = "Название профиля", FontWeight = FontWeights.SemiBold, FontSize = 14 });
-            var tb = new TextBox { Margin = new Thickness(0,8,0,0), Padding = new Thickness(8,6) };
+            var tb = new TextBox { Margin = new Thickness(0,8,0,0), Padding = new Thickness(8,6,8,6) };
             tb.Text = $"Профиль {DateTime.Now:dd.MM HH:mm}";
             root.Children.Add(tb);
             var btnPanel = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0,16,0,0) };
-            var btnCancel = new Button { Content = "Отмена", Padding = new Thickness(16,6), Margin = new Thickness(0,0,8,0) };
+            var btnCancel = new Button { Content = "Отмена", Padding = new Thickness(16,6,16,6), Margin = new Thickness(0,0,8,0) };
             btnCancel.Click += (s,e)=> DialogResult=false;
-            var btnOk = new Button { Content = "Сохранить", Padding = new Thickness(16,6), Background = (System.Windows.Media.Brush)Application.Current.FindResource("PrimaryBrush"), Foreground = System.Windows.Media.Brushes.White };
+            var btnOk = new Button { Content = "Сохранить", Padding = new Thickness(16,6,16,6), Background = (System.Windows.Media.Brush)System.Windows.Application.Current.FindResource("PrimaryBrush"), Foreground = System.Windows.Media.Brushes.White };
             btnOk.Click += (s,e)=> { ProfileName = tb.Text; DialogResult = true; };
             btnPanel.Children.Add(btnCancel); btnPanel.Children.Add(btnOk);
             root.Children.Add(btnPanel);
