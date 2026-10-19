@@ -113,16 +113,16 @@ namespace ScreenFX.Tests
         public void Letterbox_OverridesColor()
         {
             var p = new FilterParams { LetterboxEnabled = true, LetterboxHeight = 0.1f, LetterboxColorR=0, LetterboxColorG=0, LetterboxColorB=0 };
-            p.Saturation = 2; p.Exposure = 2; p.NegativeEnabled = true;
+            p.Saturation = 1.2f; p.Exposure = 0.5f; p.NegativeEnabled = true;
             // uvY inside letterbox should be black regardless of filters
             var (r,g,b) = FilterPipeline.ApplyWithLetterbox(0.5,0.5,0.5, 0.05, p);
             Assert.Equal(0, r, 3);
             Assert.Equal(0, g, 3);
             Assert.Equal(0, b, 3);
-            // uvY outside letterbox should be filtered
-            var (r2,g2,b2) = FilterPipeline.ApplyWithLetterbox(0.5,0.5,0.5, 0.5, p);
-            // Negative of gray 0.5 -> 0.5, but exposure 2 -> etc, not black
+            // uvY outside letterbox should be filtered (not black)
+            var (r2,g2,b2) = FilterPipeline.ApplyWithLetterbox(0.2,0.2,0.2, 0.5, p);
             Assert.NotEqual(0, r2);
+            Assert.True(r2 > 0.1 && r2 < 0.9);
         }
 
         [Fact]
