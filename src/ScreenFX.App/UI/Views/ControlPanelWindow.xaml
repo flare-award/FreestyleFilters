@@ -1,0 +1,662 @@
+<Window x:Class="ScreenFX.UI.Views.ControlPanelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="ScreenFX"
+        Width="380" Height="860"
+        MinWidth="360" MinHeight="600"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="True"
+        ResizeMode="CanResizeWithGrip"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        >
+    <Window.Resources>
+        <Style x:Key="IconButton" TargetType="Button">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFE8DEF8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FFEADDFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border x:Name="RootBorder" Background="{StaticResource SurfaceBrush}" CornerRadius="28" Margin="8">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="32" ShadowDepth="8" Opacity="0.16" Color="Black"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" CornerRadius="28,28,0,0" Padding="20,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- App Icon -->
+                    <Border Width="40" Height="40" CornerRadius="12" Background="White" Opacity="0.95">
+                        <TextBlock Text="◐" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="ScreenFX" FontFamily="{StaticResource DisplayFont}" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="#FF4CAF50" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="StatusText" Text="Фильтры включены" FontSize="12" Foreground="White" Opacity="0.92" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Grid.Column="2" Style="{StaticResource IconButton}" x:Name="CloseButton" ToolTip="Скрыть панель (не завершать)">
+                        <TextBlock Text="✕" FontSize="16" Foreground="White" FontWeight="Medium"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Global Toggle -->
+            <Border Grid.Row="1" Style="{StaticResource ExpressiveCard}" Margin="16,12,16,0" Background="{StaticResource SurfaceContainerHighBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Фильтрация" Style="{StaticResource LabelText}" FontWeight="SemiBold" Foreground="#FF21005D"/>
+                        <TextBlock Text="Влияет на выбранные мониторы" FontSize="12" Foreground="{StaticResource SecondaryBrush}" Opacity="0.8"/>
+                    </StackPanel>
+                    <CheckBox Grid.Column="1" x:Name="GlobalToggle" Style="{StaticResource ExpressiveToggle}" IsChecked="True" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Main Scroll -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="0,4,0,0" PanningMode="VerticalOnly">
+                <StackPanel Margin="16,8,16,12">
+                    <!-- Tabs -->
+                    <Border Background="{StaticResource SurfaceContainerHighBrush}" CornerRadius="20" Padding="4" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="TabFilters" Content="Фильтры" Style="{StaticResource FilledButton}" FontSize="13" Padding="8,8" Margin="2"/>
+                            <Button x:Name="TabMonitors" Grid.Column="1" Content="Экраны" Style="{StaticResource TextButton}" FontSize="13" Foreground="{StaticResource SecondaryBrush}" Padding="8,8" Margin="2"/>
+                            <Button x:Name="TabSettings" Grid.Column="2" Content="Настройки" Style="{StaticResource TextButton}" FontSize="13" Foreground="{StaticResource SecondaryBrush}" Padding="8,8" Margin="2"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- FILTERS TAB -->
+                    <StackPanel x:Name="FiltersPanel">
+                        <!-- Quick actions -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <Button x:Name="BtnDisableAll" Content="Отключить всё" Style="{StaticResource TonalButton}" FontSize="12" Padding="14,6" Margin="0,0,8,0"/>
+                            <Button x:Name="BtnResetAll" Content="Сбросить" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="14,6" Margin="0,0,8,0"/>
+                            <Button x:Name="BtnSaveProfile" Content="Сохранить профиль" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="14,6"/>
+                        </StackPanel>
+
+                        <!-- Profiles quick -->
+                        <Border Style="{StaticResource ExpressiveCard}" Padding="12">
+                            <StackPanel>
+                                <TextBlock Text="Профили" Style="{StaticResource LabelText}" FontWeight="SemiBold"/>
+                                <ComboBox x:Name="ProfileCombo" Margin="0,8,0,0" Padding="8,6" />
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                    <Button x:Name="BtnLoadProfile" Content="Загрузить" Style="{StaticResource TonalButton}" FontSize="12" Padding="12,6"/>
+                                    <Button x:Name="BtnDeleteProfile" Content="Удалить" Style="{StaticResource TextButton}" FontSize="12" Margin="8,0,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Saturation -->
+                        <Border Style="{StaticResource ExpressiveCard}" x:Name="CardSaturation">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Насыщенность" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Style="{StaticResource ValuePill}" Margin="8,0">
+                                        <TextBlock x:Name="ValueSaturation" Text="100%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Border>
+                                    <CheckBox Grid.Column="2" x:Name="ToggleSaturation" Content="Вкл" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Slider x:Name="SliderSaturation" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="2.5" Value="1" TickFrequency="0.1" Margin="0,4,0,0"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="SpaceBetween">
+                                    <TextBlock Text="Ч/Б" FontSize="10" Foreground="{StaticResource SecondaryBrush}"/>
+                                    <TextBlock Text="Натурально" FontSize="10" Foreground="{StaticResource SecondaryBrush}"/>
+                                    <TextBlock Text="Ярко" FontSize="10" Foreground="{StaticResource SecondaryBrush}"/>
+                                </StackPanel>
+                                <Button x:Name="ResetSaturation" Content="Сброс" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right" Padding="8,2"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Exposure -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Экспозиция" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Style="{StaticResource ValuePill}" Margin="8,0">
+                                        <TextBlock x:Name="ValueExposure" Text="0.0 EV" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Border>
+                                    <CheckBox Grid.Column="2" x:Name="ToggleExposure" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Slider x:Name="SliderExposure" Style="{StaticResource ExpressiveSlider}" Minimum="-3" Maximum="3" Value="0" TickFrequency="0.1"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Темнее" FontSize="10" Foreground="{StaticResource SecondaryBrush}"/>
+                                    <TextBlock Text="—" FontSize="10" Foreground="{StaticResource SecondaryBrush}" Margin="80,0,0,0"/>
+                                    <TextBlock Text="Светлее" FontSize="10" Foreground="{StaticResource SecondaryBrush}" Margin="80,0,0,0"/>
+                                </StackPanel>
+                                <Button x:Name="ResetExposure" Content="Сброс" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right" Padding="8,2"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Negative -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Негатив" Style="{StaticResource LabelText}"/>
+                                    <TextBlock Text="Инверсия всех цветов" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" x:Name="ToggleNegative" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Letterbox -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Кинематографические полосы" Style="{StaticResource LabelText}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                    <CheckBox Grid.Column="1" x:Name="ToggleLetterbox" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                                </Grid>
+                                <StackPanel x:Name="LetterboxOptions" Margin="0,12,0,0">
+                                    <TextBlock Text="Соотношение сторон" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                    <ComboBox x:Name="ComboLetterboxPreset" Margin="0,4,0,0" Padding="8,6">
+                                        <ComboBoxItem Content="Выкл" Tag="Off" IsSelected="True"/>
+                                        <ComboBoxItem Content="2.39:1 (Scope)" Tag="2.39"/>
+                                        <ComboBoxItem Content="2.00:1 (Univisium)" Tag="2"/>
+                                        <ComboBoxItem Content="1.85:1" Tag="1.85"/>
+                                        <ComboBoxItem Content="2.35:1" Tag="2.35"/>
+                                        <ComboBoxItem Content="Вручную" Tag="Manual"/>
+                                    </ComboBox>
+                                    <Grid Margin="0,8,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Высота полос" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueLetterbox" Grid.Column="1" Text="8%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderLetterbox" Style="{StaticResource ExpressiveSlider}" Minimum="0.01" Maximum="0.4" Value="0.08"/>
+                                    <TextBlock Text="Цвет полос" FontSize="12" Foreground="{StaticResource SecondaryBrush}" Margin="0,4,0,0"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                        <Button x:Name="BtnLetterboxBlack" Content="Чёрный" Style="{StaticResource TonalButton}" FontSize="11" Padding="12,6" Margin="0,0,6,0"/>
+                                        <Button x:Name="BtnLetterboxDark" Content="Тёмно-серый" Style="{StaticResource OutlinedButton}" FontSize="11" Padding="12,6"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Hue -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Оттенок" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Style="{StaticResource ValuePill}" Margin="8,0">
+                                        <TextBlock x:Name="ValueHue" Text="0°" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Border>
+                                    <CheckBox Grid.Column="2" x:Name="ToggleHue" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Slider x:Name="SliderHue" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="360" Value="0"/>
+                                <Button x:Name="ResetHue" Content="Сброс" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right" Padding="8,2"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Temperature -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Цветовая температура" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Style="{StaticResource ValuePill}" Margin="8,0">
+                                        <TextBlock x:Name="ValueTemp" Text="0" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Border>
+                                    <CheckBox Grid.Column="2" x:Name="ToggleTemp" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Slider x:Name="SliderTemp" Style="{StaticResource ExpressiveSlider}" Minimum="-1" Maximum="1" Value="0"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="SpaceBetween">
+                                    <TextBlock Text="❄ Холодно" FontSize="11" Foreground="#FF3B82F6"/>
+                                    <TextBlock Text="Нейтрально" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
+                                    <TextBlock Text="Тепло ☀" FontSize="11" Foreground="#FFF59E0B"/>
+                                </StackPanel>
+                                <Button x:Name="ResetTemp" Content="Сброс" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right" Padding="8,2"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Night Mode -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Ночной режим" Style="{StaticResource LabelText}"/>
+                                        <TextBlock Text="Снижение синего света" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </StackPanel>
+                                    <CheckBox Grid.Column="1" x:Name="ToggleNight" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                                </Grid>
+                                <StackPanel x:Name="NightOptions" Margin="0,8,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Сила" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueNight" Grid.Column="1" Text="50%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderNight" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.5"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Halftone -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Полутон" Style="{StaticResource LabelText}"/>
+                                        <TextBlock Text="Точечный растр" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </StackPanel>
+                                    <CheckBox Grid.Column="1" x:Name="ToggleHalftone" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                                </Grid>
+                                <StackPanel x:Name="HalftoneOptions" Margin="0,8,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Сила" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueHalftoneStr" Grid.Column="1" Text="60%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderHalftoneStr" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.6"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Размер точек" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueHalftoneDot" Grid.Column="1" Text="6 px" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderHalftoneDot" Style="{StaticResource ExpressiveSlider}" Minimum="1" Maximum="24" Value="6"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Контраст" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueHalftoneContrast" Grid.Column="1" Text="1.0" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderHalftoneContrast" Style="{StaticResource ExpressiveSlider}" Minimum="0.2" Maximum="3" Value="1"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Угол растра" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueHalftoneAngle" Grid.Column="1" Text="45°" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderHalftoneAngle" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="180" Value="45"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Sharpen -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Резкость" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                                    <CheckBox Grid.Column="1" x:Name="ToggleSharpen" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                                </Grid>
+                                <StackPanel x:Name="SharpenOptions" Margin="0,8,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Интенсивность" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueSharpen" Grid.Column="1" Text="35%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderSharpen" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.35"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Circular Blur -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Размытие по кругу" Style="{StaticResource LabelText}"/>
+                                        <TextBlock Text="Чёткий центр, размытые края" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </StackPanel>
+                                    <CheckBox Grid.Column="1" x:Name="ToggleCircular" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                                </Grid>
+                                <StackPanel x:Name="CircularOptions" Margin="0,8,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Радиус чёткой области" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueCircularRadius" Grid.Column="1" Text="25%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderCircularRadius" Style="{StaticResource ExpressiveSlider}" Minimum="0.05" Maximum="0.8" Value="0.25"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Сила размытия" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueCircularStr" Grid.Column="1" Text="80%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderCircularStr" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.8"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Плавность перехода" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueCircularSmooth" Grid.Column="1" Text="0.12" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderCircularSmooth" Style="{StaticResource ExpressiveSlider}" Minimum="0.01" Maximum="0.5" Value="0.12"/>
+                                    <TextBlock Text="Положение центра" FontSize="12" Foreground="{StaticResource SecondaryBrush}" Margin="0,8,0,4"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="X" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <Slider Grid.Column="1" x:Name="SliderCircularX" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.5" Width="110"/>
+                                        <TextBlock Grid.Column="2" Text="Y" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center" Margin="12,0,6,0"/>
+                                        <Slider Grid.Column="3" x:Name="SliderCircularY" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.5" Width="110"/>
+                                    </Grid>
+                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                        <TextBlock x:Name="ValueCircularCenter" Text="Центр: 0.50, 0.50" FontSize="11" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <Button x:Name="BtnCircularResetCenter" Content="Сброс центра" Style="{StaticResource TextButton}" FontSize="11" Margin="12,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Full Blur -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Размытие всего экрана" Style="{StaticResource LabelText}"/>
+                                        <TextBlock Text="Мягкое полноэкранное размытие" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </StackPanel>
+                                    <CheckBox Grid.Column="1" x:Name="ToggleBlur" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                                </Grid>
+                                <StackPanel x:Name="BlurOptions" Margin="0,8,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Сила" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueBlur" Grid.Column="1" Text="50%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderBlur" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.5"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- HSV -->
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="HSV" Style="{StaticResource LabelText}"/>
+                                        <TextBlock Text="Тон · Насыщенность · Яркость" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </StackPanel>
+                                    <CheckBox Grid.Column="1" x:Name="ToggleHSV" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                                </Grid>
+                                <StackPanel x:Name="HSVOptions" Margin="0,8,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Hue (тон)" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueHSVHue" Grid.Column="1" Text="0°" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderHSVHue" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="360" Value="0"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Saturation" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueHSVSat" Grid.Column="1" Text="100%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderHSVSat" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="2" Value="1"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Value (яркость)" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="ValueHSVVal" Grid.Column="1" Text="100%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Grid>
+                                    <Slider x:Name="SliderHSVVal" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="2" Value="1"/>
+                                    <Button x:Name="BtnResetHSV" Content="Сброс HSV" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                    <!-- MONITORS TAB -->
+                    <StackPanel x:Name="MonitorsPanel" Visibility="Collapsed">
+                        <TextBlock Text="Целевые мониторы" Style="{StaticResource SectionHeader}" Margin="0,0,0,4"/>
+                        <TextBlock Text="Выберите, на каких экранах применять фильтры. Требуется хотя бы один." Style="{StaticResource BodyText}" Foreground="{StaticResource SecondaryBrush}" FontSize="12" Margin="0,0,0,8"/>
+                        <StackPanel x:Name="MonitorList" />
+                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                            <Button x:Name="BtnSelectAllMonitors" Content="Выбрать все" Style="{StaticResource TonalButton}" FontSize="12" Padding="14,6"/>
+                            <Button x:Name="BtnClearMonitors" Content="Снять всё" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="14,6" Margin="8,0,0,0"/>
+                            <Button x:Name="BtnRefreshMonitors" Content="Обновить" Style="{StaticResource TextButton}" FontSize="12" Margin="8,0,0,0"/>
+                        </StackPanel>
+                        <Border Style="{StaticResource ExpressiveCard}" Margin="0,16,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Экран интерфейса" Style="{StaticResource LabelText}" FontWeight="SemiBold"/>
+                                <TextBlock Text="На каком мониторе показывать панель управления" FontSize="12" Foreground="{StaticResource SecondaryBrush}" Margin="0,2,0,8"/>
+                                <ComboBox x:Name="ComboPanelMonitor" Padding="8,6"/>
+                                <TextBlock Text="Панель появится с левой стороны выбранного экрана." FontSize="11" Foreground="{StaticResource SecondaryBrush}" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="#FFFFF8E1" CornerRadius="12" Padding="12" Margin="0,12,0,0" BorderBrush="#FFFFE082" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Подсказка" FontWeight="SemiBold" FontSize="12" Foreground="#FFF57F17"/>
+                                <TextBlock Text="Фильтры и панель — независимые настройки. Например, можно фильтровать центральный монитор, а панель показывать слева." FontSize="11" Foreground="#FF5D4037" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- SETTINGS TAB -->
+                    <StackPanel x:Name="SettingsPanel" Visibility="Collapsed">
+                        <TextBlock Text="Горячие клавиши" Style="{StaticResource SectionHeader}" Margin="0,0,0,4"/>
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Показать / скрыть панель" Style="{StaticResource LabelText}" FontSize="13"/>
+                                        <TextBlock Text="Работает глобально" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="{StaticResource SecondaryContainerBrush}" CornerRadius="8" Padding="10,6" VerticalAlignment="Center">
+                                        <TextBlock x:Name="HotkeyPanelDisplay" Text="Alt + Shift + F10" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Border>
+                                </Grid>
+                                <Button x:Name="BtnChangeHotkeyPanel" Content="Изменить" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="12,6" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                                <Separator Margin="0,12"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Вкл / откл фильтрацию" Style="{StaticResource LabelText}" FontSize="13"/>
+                                        <TextBlock Text="Быстро отключить все эффекты" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="{StaticResource SecondaryContainerBrush}" CornerRadius="8" Padding="10,6" VerticalAlignment="Center">
+                                        <TextBlock x:Name="HotkeyFiltersDisplay" Text="Alt + Shift + F9" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Border>
+                                </Grid>
+                                <Button x:Name="BtnChangeHotkeyFilters" Content="Изменить" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="12,6" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                                <Separator Margin="0,12"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Сброс фильтров" Style="{StaticResource LabelText}" FontSize="13"/>
+                                        <TextBlock Text="Вернуть нейтральное изображение" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Background="{StaticResource SecondaryContainerBrush}" CornerRadius="8" Padding="10,6" VerticalAlignment="Center">
+                                        <TextBlock x:Name="HotkeyResetDisplay" Text="Alt + Shift + F8" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                    </Border>
+                                </Grid>
+                                <Button x:Name="BtnChangeHotkeyReset" Content="Изменить" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="12,6" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                                <TextBlock x:Name="HotkeyStatus" Text="" FontSize="11" Foreground="{StaticResource ErrorColor}" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Text="Автозапуск" Style="{StaticResource SectionHeader}" FontSize="16" Margin="0,16,0,8"/>
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Запускать вместе с Windows" Style="{StaticResource LabelText}"/>
+                                    <TextBlock Text="Приложение запустится в трее" FontSize="12" Foreground="{StaticResource SecondaryBrush}"/>
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" x:Name="ToggleStartup" Style="{StaticResource ExpressiveToggle}" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <TextBlock Text="О программе" Style="{StaticResource SectionHeader}" FontSize="16" Margin="0,16,0,8"/>
+                        <Border Style="{StaticResource ExpressiveCard}">
+                            <StackPanel>
+                                <TextBlock Text="ScreenFX 1.0.0" FontWeight="SemiBold" FontSize="14"/>
+                                <TextBlock Text="Системные фильтры реального времени для Windows 10/11. Захват через DXGI Desktop Duplication, обработка на GPU через Direct3D 11 и HLSL." FontSize="12" Foreground="{StaticResource SecondaryBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                <TextBlock Text="Порядок обработки: Экспозиция → Температура → Ночной режим → Насыщенность → Hue → HSV → Негатив → Резкость → Размытие → Круглое размытие → Полутон → Полосы (финал)." FontSize="11" Foreground="{StaticResource SecondaryBrush}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                <TextBlock Text="Известные ограничения: UAC, экран блокировки, защищённое видео HDR и эксклюзивный полноэкранный режим могут не фильтроваться." FontSize="11" Foreground="#FFBA1A1A" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Button x:Name="BtnOpenSettingsFolder" Content="Открыть папку настроек" Style="{StaticResource OutlinedButton}" Margin="0,16,0,0" HorizontalAlignment="Left" FontSize="12"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer -->
+            <Border Grid.Row="3" BorderBrush="{StaticResource OutlineVariantBrush}" BorderThickness="0,1,0,0" Padding="16,12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="8" Height="8" Fill="#FF4CAF50" VerticalAlignment="Center" x:Name="FooterDot"/>
+                        <TextBlock x:Name="FooterText" Text="Готово • 60 FPS" FontSize="11" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button x:Name="BtnHidePanel" Content="Скрыть" Style="{StaticResource TonalButton}" FontSize="12" Padding="16,6" Margin="0,0,8,0"/>
+                        <Button x:Name="BtnQuitApp" Content="Выход" Style="{StaticResource TextButton}" FontSize="12" Foreground="{StaticResource ErrorColor}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

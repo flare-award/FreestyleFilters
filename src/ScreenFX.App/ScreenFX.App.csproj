@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>ScreenFX</AssemblyName>
+    <RootNamespace>ScreenFX</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>ScreenFX Team</Authors>
+    <Company>ScreenFX</Company>
+    <Product>ScreenFX</Product>
+    <Description>Системные экранные фильтры в реальном времени для Windows 10/11</Description>
+    <Copyright>© 2026 ScreenFX</Copyright>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <PublishSingleFile>false</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Vortice.Windows" Version="3.4.2" />
+    <PackageReference Include="Vortice.Direct3D11" Version="3.4.2" />
+    <PackageReference Include="Vortice.DXGI" Version="3.4.2" />
+    <PackageReference Include="Vortice.D3DCompiler" Version="3.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Engine\Rendering\Shaders\*.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Assets\app.ico" />
+  </ItemGroup>
+
+</Project>
