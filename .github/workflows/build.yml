@@ -22,7 +22,15 @@ jobs:
         run: |
           dotnet --info
           dotnet nuget list source
-          dotnet restore --verbosity minimal
+          dotnet restore --verbosity normal 2>&1 | tee restore.log || (cat restore.log; exit 1)
+
+      - name: Upload restore log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: restore-log
+          path: restore.log
+          retention-days: 7
 
       - name: Build
         run: dotnet build --configuration Release --verbosity minimal
