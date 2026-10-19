@@ -98,7 +98,7 @@ namespace ScreenFX.Engine.Capture
             if (_disposed || _duplication == null) return null;
             try
             {
-                var hr = _duplication.AcquireNextFrame(timeoutMs, out OutduplFrameInfo frameInfo, out IDXGIResource? desktopResource);
+                var hr = _duplication.AcquireNextFrame((uint)timeoutMs, out OutduplFrameInfo frameInfo, out IDXGIResource? desktopResource);
                 if (hr.Failure)
                 {
                     if (hr.Code == Vortice.DXGI.ResultCode.WaitTimeout.Code) return null;

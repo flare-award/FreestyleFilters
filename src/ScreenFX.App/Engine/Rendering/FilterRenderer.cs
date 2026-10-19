@@ -94,7 +94,7 @@ namespace ScreenFX.Engine.Rendering
                 ctx.PSSetSampler(0, _sampler);
             ctx.IASetPrimitiveTopology(Vortice.Direct3D.PrimitiveTopology.TriangleList);
             ctx.Draw(3, 0);
-            ctx.PSSetShaderResource(0, null);
+            ctx.PSSetShaderResource(0, null!);
         }
 
         private string GetEmbeddedVS() => @"
