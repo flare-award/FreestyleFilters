@@ -284,9 +284,9 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="❄ Холодно" FontSize="11" Foreground="#FF3B82F6"/>
+                                    <TextBlock Grid.Column="0" Text="❄ Холодно" FontSize="11" Foreground="{StaticResource ColdBrush}"/>
                                     <TextBlock Grid.Column="1" Text="Нейтрально" FontSize="11" Foreground="{StaticResource SecondaryBrush}" HorizontalAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="Тепло ☀" FontSize="11" Foreground="#FFF59E0B" HorizontalAlignment="Right"/>
+                                    <TextBlock Grid.Column="2" Text="Тепло ☀" FontSize="11" Foreground="{StaticResource WarmBrush}" HorizontalAlignment="Right"/>
                                 </Grid>
                                 <Button x:Name="ResetTemp" Content="Сброс" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right" Padding="8,2"/>
                             </StackPanel>
@@ -640,7 +640,7 @@
                                 <TextBlock Text="ScreenFX 1.0.0" FontWeight="SemiBold" FontSize="14"/>
                                 <TextBlock Text="Системные фильтры реального времени для Windows 10/11. Захват через DXGI Desktop Duplication, обработка на GPU через Direct3D 11 и HLSL." FontSize="12" Foreground="{StaticResource SecondaryBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
                                 <TextBlock Text="Порядок обработки: Экспозиция → Температура → Ночной режим → Насыщенность → Hue → HSV → Негатив → Резкость → Размытие → Круглое размытие → Полутон → Полосы (финал)." FontSize="11" Foreground="{StaticResource SecondaryBrush}" TextWrapping="Wrap" Margin="0,8,0,0"/>
-                                <TextBlock Text="Известные ограничения: UAC, экран блокировки, защищённое видео HDR и эксклюзивный полноэкранный режим могут не фильтроваться." FontSize="11" Foreground="#FFBA1A1A" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                <TextBlock Text="Известные ограничения: UAC, экран блокировки, защищённое видео HDR и эксклюзивный полноэкранный режим могут не фильтроваться." FontSize="11" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Margin="0,8,0,0"/>
                             </StackPanel>
                         </Border>
 

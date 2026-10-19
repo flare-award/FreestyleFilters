@@ -18,6 +18,10 @@
         <Color x:Key="ErrorColor">#FFBA1A1A</Color>
         <Color x:Key="SuccessColor">#FF2E7D32</Color>
 
+        <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+        <SolidColorBrush x:Key="ColdBrush" Color="#FF3B82F6"/>
+        <SolidColorBrush x:Key="WarmBrush" Color="#FFF59E0B"/>
+
         <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
         <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnPrimaryColor}"/>
         <SolidColorBrush x:Key="PrimaryContainerBrush" Color="{StaticResource PrimaryContainerColor}"/>

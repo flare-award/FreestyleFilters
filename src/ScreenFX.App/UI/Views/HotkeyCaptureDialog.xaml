@@ -16,7 +16,7 @@
             <Border Background="{StaticResource SurfaceContainerHighBrush}" CornerRadius="12" Padding="16" Margin="0,16,0,0" MinHeight="56">
                 <TextBlock x:Name="DisplayText" Text="Нажмите клавиши..." FontFamily="Consolas" FontSize="16" FontWeight="Medium" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF21005D"/>
             </Border>
-            <TextBlock x:Name="ErrorText" Text="" FontSize="12" Foreground="#FFBA1A1A" Margin="0,8,0,0" TextWrapping="Wrap"/>
+            <TextBlock x:Name="ErrorText" Text="" FontSize="12" Foreground="{StaticResource ErrorBrush}" Margin="0,8,0,0" TextWrapping="Wrap"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
                 <Button x:Name="BtnCancel" Content="Отмена" Style="{StaticResource OutlinedButton}" Padding="20,8" Margin="0,0,8,0"/>
                 <Button x:Name="BtnOk" Content="Сохранить" Style="{StaticResource FilledButton}" Padding="20,8" IsEnabled="False"/>
