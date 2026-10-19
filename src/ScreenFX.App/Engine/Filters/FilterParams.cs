@@ -86,7 +86,7 @@ namespace ScreenFX.Engine.Filters
         public float Hue
         {
             get => _hue;
-            set => _hue = value % 1f; if (_hue < 0) _hue += 1f;
+            set { _hue = value % 1f; if (_hue < 0) _hue += 1f; }
         }
         // UI helper degrees
         public float HueDegrees

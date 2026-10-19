@@ -117,7 +117,7 @@ VSOutput main(uint vertexID : SV_VertexID) {
             try
             {
                 var asm = typeof(FilterRenderer).Assembly;
-                using var s = asm.GetManifestResourceStream(""ScreenFX.Engine.Rendering.Shaders.FilterPS.hlsl"");
+                using var s = asm.GetManifestResourceStream("ScreenFX.Engine.Rendering.Shaders.FilterPS.hlsl");
                 if (s != null) using (var r = new StreamReader(s)) return r.ReadToEnd();
             } catch {}
             // Minimal passthrough if full shader missing
