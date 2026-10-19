@@ -71,6 +71,9 @@ namespace ScreenFX
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            // WinForms HighDPI must be set before any WinForms control is created (before base.OnStartup which may create window)
+            try { System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.PerMonitorV2); } catch {}
+
             base.OnStartup(e);
 
             // Global handlers BEFORE any window is created
