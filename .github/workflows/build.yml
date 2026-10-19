@@ -22,13 +22,13 @@ jobs:
         run: |
           dotnet --info
           dotnet nuget list source
-          dotnet restore -p:Platform=x64 --verbosity normal
+          dotnet restore --verbosity minimal
 
       - name: Build
-        run: dotnet build --configuration Release -p:Platform=x64 --verbosity normal
+        run: dotnet build --configuration Release --verbosity minimal
 
       - name: Test
-        run: dotnet test --configuration Release -p:Platform=x64 --verbosity normal
+        run: dotnet test --configuration Release --verbosity minimal
 
       - name: Publish self-contained
         run: dotnet publish src/ScreenFX.App/ScreenFX.App.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=false -o publish/ScreenFX
