@@ -19,13 +19,16 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore
-        run: dotnet restore -p:Platform=x64
+        run: |
+          dotnet --info
+          dotnet nuget list source
+          dotnet restore -p:Platform=x64 --verbosity normal
 
       - name: Build
-        run: dotnet build --configuration Release -p:Platform=x64 --no-restore
+        run: dotnet build --configuration Release -p:Platform=x64 --verbosity normal
 
       - name: Test
-        run: dotnet test --configuration Release -p:Platform=x64 --no-build --verbosity normal
+        run: dotnet test --configuration Release -p:Platform=x64 --verbosity normal
 
       - name: Publish self-contained
         run: dotnet publish src/ScreenFX.App/ScreenFX.App.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=false -o publish/ScreenFX
