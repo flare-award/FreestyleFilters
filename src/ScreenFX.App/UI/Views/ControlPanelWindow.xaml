@@ -88,7 +88,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Text="Фильтрация" Style="{StaticResource LabelText}" FontWeight="SemiBold" Foreground="#FF21005D"/>
+                        <TextBlock Text="Фильтрация" Style="{StaticResource LabelText}" FontWeight="SemiBold" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                         <TextBlock Text="Влияет на выбранные мониторы" FontSize="12" Foreground="{StaticResource SecondaryBrush}" Opacity="0.8"/>
                     </StackPanel>
                     <CheckBox Grid.Column="1" x:Name="GlobalToggle" Style="{StaticResource ExpressiveToggle}" IsChecked="True" VerticalAlignment="Center"/>
@@ -144,7 +144,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Насыщенность" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
                                     <Border Grid.Column="1" Style="{StaticResource ValuePill}" Margin="8,0">
-                                        <TextBlock x:Name="ValueSaturation" Text="100%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueSaturation" Text="100%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Border>
                                     <CheckBox Grid.Column="2" x:Name="ToggleSaturation" Content="Вкл" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
                                 </Grid>
@@ -174,7 +174,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Экспозиция" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
                                     <Border Grid.Column="1" Style="{StaticResource ValuePill}" Margin="8,0">
-                                        <TextBlock x:Name="ValueExposure" Text="0.0 EV" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueExposure" Text="0.0 EV" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Border>
                                     <CheckBox Grid.Column="2" x:Name="ToggleExposure" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
                                 </Grid>
@@ -230,7 +230,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Высота полос" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueLetterbox" Grid.Column="1" Text="8%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueLetterbox" Grid.Column="1" Text="8%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderLetterbox" Style="{StaticResource ExpressiveSlider}" Minimum="0.01" Maximum="0.4" Value="0.08"/>
                                     <TextBlock Text="Цвет полос" FontSize="12" Foreground="{StaticResource SecondaryBrush}" Margin="0,4,0,0"/>
@@ -253,7 +253,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Оттенок" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
                                     <Border Grid.Column="1" Style="{StaticResource ValuePill}" Margin="8,0">
-                                        <TextBlock x:Name="ValueHue" Text="0°" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueHue" Text="0°" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Border>
                                     <CheckBox Grid.Column="2" x:Name="ToggleHue" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
                                 </Grid>
@@ -273,7 +273,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Цветовая температура" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
                                     <Border Grid.Column="1" Style="{StaticResource ValuePill}" Margin="8,0">
-                                        <TextBlock x:Name="ValueTemp" Text="0" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueTemp" Text="0" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Border>
                                     <CheckBox Grid.Column="2" x:Name="ToggleTemp" Style="{StaticResource ExpressiveToggle}" IsChecked="False" VerticalAlignment="Center"/>
                                 </Grid>
@@ -313,7 +313,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Сила" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueNight" Grid.Column="1" Text="50%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueNight" Grid.Column="1" Text="50%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderNight" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.5"/>
                                 </StackPanel>
@@ -341,7 +341,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Сила" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueHalftoneStr" Grid.Column="1" Text="60%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueHalftoneStr" Grid.Column="1" Text="60%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderHalftoneStr" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.6"/>
                                     <Grid>
@@ -350,7 +350,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Размер точек" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueHalftoneDot" Grid.Column="1" Text="6 px" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueHalftoneDot" Grid.Column="1" Text="6 px" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderHalftoneDot" Style="{StaticResource ExpressiveSlider}" Minimum="1" Maximum="24" Value="6"/>
                                     <Grid>
@@ -359,7 +359,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Контраст" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueHalftoneContrast" Grid.Column="1" Text="1.0" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueHalftoneContrast" Grid.Column="1" Text="1.0" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderHalftoneContrast" Style="{StaticResource ExpressiveSlider}" Minimum="0.2" Maximum="3" Value="1"/>
                                     <Grid>
@@ -368,7 +368,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Угол растра" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueHalftoneAngle" Grid.Column="1" Text="45°" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueHalftoneAngle" Grid.Column="1" Text="45°" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderHalftoneAngle" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="180" Value="45"/>
                                 </StackPanel>
@@ -393,7 +393,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Интенсивность" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueSharpen" Grid.Column="1" Text="35%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueSharpen" Grid.Column="1" Text="35%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderSharpen" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.35"/>
                                 </StackPanel>
@@ -421,7 +421,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Радиус чёткой области" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueCircularRadius" Grid.Column="1" Text="25%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueCircularRadius" Grid.Column="1" Text="25%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderCircularRadius" Style="{StaticResource ExpressiveSlider}" Minimum="0.05" Maximum="0.8" Value="0.25"/>
                                     <Grid>
@@ -430,7 +430,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Сила размытия" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueCircularStr" Grid.Column="1" Text="80%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueCircularStr" Grid.Column="1" Text="80%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderCircularStr" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.8"/>
                                     <Grid>
@@ -439,7 +439,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Плавность перехода" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueCircularSmooth" Grid.Column="1" Text="0.12" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueCircularSmooth" Grid.Column="1" Text="0.12" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderCircularSmooth" Style="{StaticResource ExpressiveSlider}" Minimum="0.01" Maximum="0.5" Value="0.12"/>
                                     <TextBlock Text="Положение центра" FontSize="12" Foreground="{StaticResource SecondaryBrush}" Margin="0,8,0,4"/>
@@ -484,7 +484,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Сила" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueBlur" Grid.Column="1" Text="50%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueBlur" Grid.Column="1" Text="50%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderBlur" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="1" Value="0.5"/>
                                 </StackPanel>
@@ -512,7 +512,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Hue (тон)" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueHSVHue" Grid.Column="1" Text="0°" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueHSVHue" Grid.Column="1" Text="0°" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderHSVHue" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="360" Value="0"/>
                                     <Grid>
@@ -521,7 +521,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Saturation" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueHSVSat" Grid.Column="1" Text="100%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueHSVSat" Grid.Column="1" Text="100%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderHSVSat" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="2" Value="1"/>
                                     <Grid>
@@ -530,7 +530,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Value (яркость)" FontSize="12" Foreground="{StaticResource SecondaryBrush}" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="ValueHSVVal" Grid.Column="1" Text="100%" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="ValueHSVVal" Grid.Column="1" Text="100%" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Grid>
                                     <Slider x:Name="SliderHSVVal" Style="{StaticResource ExpressiveSlider}" Minimum="0" Maximum="2" Value="1"/>
                                     <Button x:Name="BtnResetHSV" Content="Сброс HSV" Style="{StaticResource TextButton}" FontSize="11" HorizontalAlignment="Right"/>
@@ -581,7 +581,7 @@
                                         <TextBlock Text="Работает глобально" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
                                     </StackPanel>
                                     <Border Grid.Column="1" Background="{StaticResource SecondaryContainerBrush}" CornerRadius="8" Padding="10,6" VerticalAlignment="Center">
-                                        <TextBlock x:Name="HotkeyPanelDisplay" Text="Alt + Shift + F10" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="HotkeyPanelDisplay" Text="Alt + Shift + F10" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Border>
                                 </Grid>
                                 <Button x:Name="BtnChangeHotkeyPanel" Content="Изменить" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="12,6" HorizontalAlignment="Left" Margin="0,8,0,0"/>
@@ -596,7 +596,7 @@
                                         <TextBlock Text="Быстро отключить все эффекты" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
                                     </StackPanel>
                                     <Border Grid.Column="1" Background="{StaticResource SecondaryContainerBrush}" CornerRadius="8" Padding="10,6" VerticalAlignment="Center">
-                                        <TextBlock x:Name="HotkeyFiltersDisplay" Text="Alt + Shift + F9" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="HotkeyFiltersDisplay" Text="Alt + Shift + F9" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Border>
                                 </Grid>
                                 <Button x:Name="BtnChangeHotkeyFilters" Content="Изменить" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="12,6" HorizontalAlignment="Left" Margin="0,8,0,0"/>
@@ -611,7 +611,7 @@
                                         <TextBlock Text="Вернуть нейтральное изображение" FontSize="11" Foreground="{StaticResource SecondaryBrush}"/>
                                     </StackPanel>
                                     <Border Grid.Column="1" Background="{StaticResource SecondaryContainerBrush}" CornerRadius="8" Padding="10,6" VerticalAlignment="Center">
-                                        <TextBlock x:Name="HotkeyResetDisplay" Text="Alt + Shift + F8" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="#FF21005D"/>
+                                        <TextBlock x:Name="HotkeyResetDisplay" Text="Alt + Shift + F8" FontFamily="Consolas" FontSize="12" FontWeight="Medium" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
                                     </Border>
                                 </Grid>
                                 <Button x:Name="BtnChangeHotkeyReset" Content="Изменить" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="12,6" HorizontalAlignment="Left" Margin="0,8,0,0"/>

@@ -14,7 +14,7 @@
             <TextBlock Text="Нажмите новое сочетание" FontFamily="{StaticResource DisplayFont}" FontSize="18" FontWeight="SemiBold"/>
             <TextBlock Text="Нажмите клавиши на клавиатуре. Например, Ctrl+Shift+F12. Избегайте системных сочетаний Windows." FontSize="12" Foreground="{StaticResource SecondaryBrush}" TextWrapping="Wrap" Margin="0,6,0,0"/>
             <Border Background="{StaticResource SurfaceContainerHighBrush}" CornerRadius="12" Padding="16" Margin="0,16,0,0" MinHeight="56">
-                <TextBlock x:Name="DisplayText" Text="Нажмите клавиши..." FontFamily="Consolas" FontSize="16" FontWeight="Medium" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF21005D"/>
+                <TextBlock x:Name="DisplayText" Text="Нажмите клавиши..." FontFamily="Consolas" FontSize="16" FontWeight="Medium" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource OnPrimaryContainerBrush}"/>
             </Border>
             <TextBlock x:Name="ErrorText" Text="" FontSize="12" Foreground="{StaticResource ErrorBrush}" Margin="0,8,0,0" TextWrapping="Wrap"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">

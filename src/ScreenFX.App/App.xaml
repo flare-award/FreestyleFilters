@@ -21,6 +21,7 @@
         <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
         <SolidColorBrush x:Key="ColdBrush" Color="#FF3B82F6"/>
         <SolidColorBrush x:Key="WarmBrush" Color="#FFF59E0B"/>
+        <SolidColorBrush x:Key="OnPrimaryContainerBrush" Color="{StaticResource OnPrimaryContainerColor}"/>
 
         <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
         <SolidColorBrush x:Key="OnPrimaryBrush" Color="{StaticResource OnPrimaryColor}"/>
@@ -83,7 +84,7 @@
         <!-- Tonal Button -->
         <Style x:Key="TonalButton" TargetType="Button" BasedOn="{StaticResource FilledButton}">
             <Setter Property="Background" Value="{StaticResource SecondaryContainerBrush}"/>
-            <Setter Property="Foreground" Value="#FF21005D"/>
+            <Setter Property="Foreground" Value="{StaticResource OnPrimaryContainerBrush}"/>
         </Style>
 
         <!-- Outlined Button -->
