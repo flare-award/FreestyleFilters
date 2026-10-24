@@ -127,11 +127,7 @@ namespace ScreenFX.Engine.Capture
 
         public void ReleaseFrame()
         {
-            if (_currentTexture != null)
-            {
-                _currentTexture.Dispose();
-                _currentTexture = null;
-            }
+            _currentTexture = null;
             try { _duplication?.ReleaseFrame(); } catch { }
         }
 
@@ -150,6 +146,7 @@ namespace ScreenFX.Engine.Capture
         private readonly Dictionary<string, DesktopDuplicationCapture> _captures = new();
         private ID3D11Device? _device;
         private ID3D11DeviceContext? _context;
+        private bool _ownsDevice = true;
 
         public bool InitializeDevice()
         {
@@ -169,6 +166,7 @@ namespace ScreenFX.Engine.Capture
                 }
                 _device = device;
                 _context = context;
+                _ownsDevice = true;
                 return device != null;
             }
             catch (Exception ex)
@@ -176,6 +174,18 @@ namespace ScreenFX.Engine.Capture
                 System.Diagnostics.Debug.WriteLine($"Failed to create D3D11 device: {ex}");
                 return false;
             }
+        }
+
+        public void SetDevice(ID3D11Device device, ID3D11DeviceContext context)
+        {
+            if (_ownsDevice)
+            {
+                _context?.Dispose();
+                _device?.Dispose();
+            }
+            _device = device;
+            _context = context;
+            _ownsDevice = false;
         }
 
         public ID3D11Device? Device => _device;
@@ -209,8 +219,11 @@ namespace ScreenFX.Engine.Capture
         {
             foreach (var c in _captures.Values) c.Dispose();
             _captures.Clear();
-            _context?.Dispose();
-            _device?.Dispose();
+            if (_ownsDevice)
+            {
+                _context?.Dispose();
+                _device?.Dispose();
+            }
         }
     }
 }

@@ -345,11 +345,17 @@ namespace ScreenFX.Overlay
             {
                 if (_overlays.ContainsKey(m.StableId)) continue;
                 var cap = _captureManager.GetOrCreate(m);
+                if (cap == null || !cap.IsInitialized)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Capture unavailable for {m.DisplayText}; overlay not created");
+                    continue;
+                }
                 var ov = new OverlayWindow(m, _deviceManager, _renderer, cap);
                 if (ov.Create())
                 {
                     ov.UpdateFilters(_globalParams);
-                    // Click-through пока панель скрыта? Управление извне
+                    // The overlay is visual-only and must never intercept desktop input.
+                    ov.SetClickThrough(true);
                     _overlays[m.StableId] = ov;
                 }
                 else

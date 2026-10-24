@@ -18,6 +18,8 @@ namespace ScreenFX.Engine.Rendering
         private ID3D11SamplerState? _sampler;
         private bool _initialized;
 
+        public string LastError { get; private set; } = "";
+
         public FilterRenderer(D3D11DeviceManager deviceManager)
         {
             _deviceManager = deviceManager;
@@ -65,6 +67,7 @@ namespace ScreenFX.Engine.Rendering
             }
             catch (Exception ex)
             {
+                LastError = ex.ToString();
                 System.Diagnostics.Debug.WriteLine($"FilterRenderer init failed: {ex}");
                 return false;
             }

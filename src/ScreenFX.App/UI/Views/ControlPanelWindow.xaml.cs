@@ -128,9 +128,9 @@ namespace ScreenFX.UI.Views
                 _filterRenderer = new FilterRenderer(_deviceManager);
                 if (!_filterRenderer.Initialize())
                 {
-                    System.Windows.MessageBox.Show("Не удалось скомпилировать шейдеры фильтров.", "ScreenFX", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show("Не удалось скомпилировать шейдеры фильтров.\n" + _filterRenderer.LastError, "ScreenFX", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
                 }
-                _captureManager.InitializeDevice();
+                _captureManager.SetDevice(_deviceManager.Device!, _deviceManager.Context!);
                 _overlayManager = new OverlayManager(_deviceManager, _filterRenderer!, _captureManager);
                 _overlayManager.StartRenderLoop();
                 ApplyMonitorTargets();
@@ -232,8 +232,8 @@ namespace ScreenFX.UI.Views
             // Ensure window visible
             Show();
             Activate();
-            // Click-through off
-            _overlayManager?.SetClickThrough(false);
+            // Keep overlay click-through so desktop stays interactive (overlay is visual only)
+            _overlayManager?.SetClickThrough(true);
 
             // Animate from -Width to 0
             bool reduceMotion = SystemParameters.MenuAnimation == false; // proxy for reduce motion
