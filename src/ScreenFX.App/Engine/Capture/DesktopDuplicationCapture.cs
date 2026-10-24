@@ -96,6 +96,7 @@ namespace ScreenFX.Engine.Capture
         public ID3D11Texture2D? AcquireNextFrame(int timeoutMs = 16)
         {
             if (_disposed || _duplication == null) return null;
+            bool acquired = false;
             try
             {
                 var hr = _duplication.AcquireNextFrame((uint)timeoutMs, out OutduplFrameInfo frameInfo, out IDXGIResource? desktopResource);
@@ -106,7 +107,12 @@ namespace ScreenFX.Engine.Capture
                         throw new InvalidOperationException("DXGI_ERROR_ACCESS_LOST");
                     return null;
                 }
-                if (desktopResource == null) return null;
+                acquired = true;
+                if (desktopResource == null)
+                {
+                    _duplication.ReleaseFrame();
+                    return null;
+                }
                 using (desktopResource)
                 {
                     var texture = desktopResource.QueryInterface<ID3D11Texture2D>();
@@ -116,10 +122,12 @@ namespace ScreenFX.Engine.Capture
             }
             catch (Exception ex) when (ex.Message.Contains("ACCESS_LOST"))
             {
+                if (acquired) try { _duplication.ReleaseFrame(); } catch { }
                 throw;
             }
             catch (Exception ex)
             {
+                if (acquired) try { _duplication.ReleaseFrame(); } catch { }
                 System.Diagnostics.Debug.WriteLine($"AcquireNextFrame error: {ex.Message}");
                 return null;
             }

@@ -30,7 +30,10 @@ namespace ScreenFX.Overlay
         private const int WS_VISIBLE = 0x10000000;
         private const int GWL_EXSTYLE = -20;
         private const int SWP_NOACTIVATE = 0x0010;
+        private const int SWP_FRAMECHANGED = 0x0020;
         private const int SWP_SHOWWINDOW = 0x0040;
+        private const int SWP_NOSIZE = 0x0001;
+        private const int SWP_NOMOVE = 0x0002;
 
         [DllImport("user32.dll")]
         static extern bool SetWindowDisplayAffinity(IntPtr hwnd, uint affinity);
@@ -65,7 +68,6 @@ namespace ScreenFX.Overlay
         }
 
         private static readonly IntPtr HWND_TOPMOST = (IntPtr)(-1);
-        private static WndProcDelegate? _wndProcDelegate;
 
         private delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
@@ -73,6 +75,8 @@ namespace ScreenFX.Overlay
         private readonly D3D11DeviceManager _deviceManager;
         private readonly FilterRenderer _filterRenderer;
         private readonly DesktopDuplicationCapture? _capture;
+        // Keep each native window procedure alive for the lifetime of its own window.
+        private readonly WndProcDelegate _wndProcDelegate;
 
         private IntPtr _hwnd = IntPtr.Zero;
         private IDXGISwapChain1? _swapChain;
@@ -93,6 +97,7 @@ namespace ScreenFX.Overlay
             _deviceManager = deviceManager;
             _filterRenderer = renderer;
             _capture = capture;
+            _wndProcDelegate = WndProc;
         }
 
         public bool Create()
@@ -101,7 +106,6 @@ namespace ScreenFX.Overlay
             {
                 string className = "ScreenFX_Overlay_" + Guid.NewGuid().ToString("N");
                 var hInst = GetModuleHandle(null);
-                _wndProcDelegate = WndProc;
                 var wc = new WNDCLASS
                 {
                     style = 0,
@@ -128,12 +132,16 @@ namespace ScreenFX.Overlay
                 bool affinityOk = SetWindowDisplayAffinity(_hwnd, WDA_EXCLUDEFROMCAPTURE);
                 if (!affinityOk)
                 {
-                    // Fallback для старых Windows, пробуем WDA_MONITOR (менее эффективно)
-                    SetWindowDisplayAffinity(_hwnd, WDA_MONITOR);
-                    System.Diagnostics.Debug.WriteLine("WDA_EXCLUDEFROMCAPTURE failed, fallback to WDA_MONITOR. Error: " + Marshal.GetLastWin32Error());
+                    // WDA_MONITOR renders the entire full-screen overlay as black in capture and
+                    // creates a permanent black feedback frame. Fail safely instead.
+                    System.Diagnostics.Debug.WriteLine("WDA_EXCLUDEFROMCAPTURE failed. Overlay disabled. Error: " + Marshal.GetLastWin32Error());
+                    DestroyWindow(_hwnd);
+                    _hwnd = IntPtr.Zero;
+                    return false;
                 }
 
-                // Topmost
+                // Force click-through after HWND creation; don't rely only on CreateWindowEx flags.
+                SetClickThrough(true);
                 SetWindowPos(_hwnd, HWND_TOPMOST, _monitor.Left, _monitor.Top, _monitor.Width, _monitor.Height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
                 CreateSwapChain();
@@ -182,15 +190,19 @@ namespace ScreenFX.Overlay
 
         public void SetClickThrough(bool clickThrough)
         {
-            if (_isClickThrough == clickThrough) return;
             _isClickThrough = clickThrough;
             if (_hwnd == IntPtr.Zero) return;
+
             int ex = GetWindowLong(_hwnd, GWL_EXSTYLE);
-            if (clickThrough) ex |= WS_EX_TRANSPARENT;
-            else ex &= ~WS_EX_TRANSPARENT;
+            if (clickThrough)
+                ex |= WS_EX_TRANSPARENT | WS_EX_NOACTIVATE;
+            else
+                ex &= ~WS_EX_TRANSPARENT;
             SetWindowLong(_hwnd, GWL_EXSTYLE, ex);
-            // Need to refresh
-            SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0, 0x0001 | 0x0002 | SWP_NOACTIVATE); // SWP_NOSIZE|SWP_NOMOVE
+
+            // SWP_FRAMECHANGED makes Windows re-evaluate the extended styles immediately.
+            SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
         }
 
         public void UpdateFilters(FilterParams p)
@@ -215,49 +227,55 @@ namespace ScreenFX.Overlay
                 return;
             }
 
+            ID3D11Texture2D? tex = null;
+            bool frameAcquired = false;
             try
             {
-                var tex = _capture.AcquireNextFrame(0);
-                if (tex == null)
-                {
-                    // Нет нового кадра — не перерисовываем, чтобы сэкономить GPU
-                    return;
-                }
+                tex = _capture.AcquireNextFrame(0);
+                if (tex == null) return;
+                frameAcquired = true;
 
-                using (tex)
-                {
-                    using var srv = _deviceManager.Device!.CreateShaderResourceView(tex);
+                using var srv = _deviceManager.Device!.CreateShaderResourceView(tex);
 
-                    var gpuParams = _currentParams.ToGpu(_monitor.Width, _monitor.Height);
-                    _filterRenderer.UpdateConstants(gpuParams);
+                var gpuParams = _currentParams.ToGpu(_monitor.Width, _monitor.Height);
+                _filterRenderer.UpdateConstants(gpuParams);
 
-                    var vp = new Viewport(0, 0, _monitor.Width, _monitor.Height, 0, 1);
-                    _filterRenderer.Render(srv, _rtv, vp);
+                var vp = new Viewport(0, 0, _monitor.Width, _monitor.Height, 0, 1);
+                _filterRenderer.Render(srv, _rtv, vp);
 
-                    var hr = _swapChain.Present(1, PresentFlags.None);
-                    if (hr.Failure)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Present failed: {hr}");
-                    }
-                }
-                _capture.ReleaseFrame();
+                var hr = _swapChain.Present(1, PresentFlags.None);
+                if (hr.Failure)
+                    System.Diagnostics.Debug.WriteLine($"Present failed: {hr}");
             }
             catch (Exception ex) when (ex.Message.Contains("ACCESS_LOST"))
             {
-                // Desktop duplication lost — пересоздать будет менеджер
+                // Never leave a stale/black full-screen frame visible after display-mode changes.
                 System.Diagnostics.Debug.WriteLine($"Access lost on {_monitor.DeviceName}: {ex}");
-                throw;
+                Hide();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Render error: {ex}");
+            }
+            finally
+            {
+                // AcquireNextFrame and ReleaseFrame must always be paired, including shader/Present errors.
+                if (frameAcquired)
+                {
+                    try { _capture.ReleaseFrame(); } catch { }
+                }
+                try { tex?.Dispose(); } catch { }
             }
         }
 
         public void Show()
         {
             if (_hwnd != IntPtr.Zero)
+            {
+                // Re-assert on every show so toggling filters can never leave an input-blocking window.
+                SetClickThrough(true);
                 SetWindowPos(_hwnd, HWND_TOPMOST, _monitor.Left, _monitor.Top, _monitor.Width, _monitor.Height, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            }
         }
 
         public void Hide()
