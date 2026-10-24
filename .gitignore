@@ -1,0 +1,25 @@
+# Build
+bin/
+obj/
+publish/
+artifacts/
+*.user
+*.suo
+.vs/
+
+# NuGet
+packages/
+
+# Logs
+logs/
+
+# Settings (user)
+*.tmp
+
+# Inno Setup
+Output/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
