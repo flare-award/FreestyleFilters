@@ -615,7 +615,7 @@
                                     </Border>
                                 </Grid>
                                 <Button x:Name="BtnChangeHotkeyReset" Content="Изменить" Style="{StaticResource OutlinedButton}" FontSize="12" Padding="12,6" HorizontalAlignment="Left" Margin="0,8,0,0"/>
-                                <TextBlock x:Name="HotkeyStatus" Text="" FontSize="11" Foreground="{StaticResource ErrorColor}" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="HotkeyStatus" Text="" FontSize="11" Foreground="{StaticResource ErrorBrush}" Margin="0,8,0,0" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
 
@@ -663,7 +663,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <Button x:Name="BtnHidePanel" Content="Скрыть" Style="{StaticResource TonalButton}" FontSize="12" Padding="16,6" Margin="0,0,8,0"/>
-                        <Button x:Name="BtnQuitApp" Content="Выход" Style="{StaticResource TextButton}" FontSize="12" Foreground="{StaticResource ErrorColor}"/>
+                        <Button x:Name="BtnQuitApp" Content="Выход" Style="{StaticResource TextButton}" FontSize="12" Foreground="{StaticResource ErrorBrush}"/>
                     </StackPanel>
                 </Grid>
             </Border>
